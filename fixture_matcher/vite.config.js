@@ -12,7 +12,7 @@ export default defineConfig({
     vueDevTools(),
     react()
   ],
-  base: './Fixture-Matcher',
+  base: '/Fixture-Matcher',
 
   resolve: {
     alias: {
