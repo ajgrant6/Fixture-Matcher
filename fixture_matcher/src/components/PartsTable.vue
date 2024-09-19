@@ -88,7 +88,7 @@ const filteredPartsData = computed(() => {
 
 onMounted(async () => {
   try {
-    const response = await axios.get('/maskmap.json')
+    const response = await axios.get('maskmap.json')
     partsData.value = response.data
   } catch (err) {
     error.value = 'Failed to load data.'
