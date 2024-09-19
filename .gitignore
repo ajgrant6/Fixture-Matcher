@@ -1,0 +1,54 @@
+# macOS specific files
+.DS_Store
+
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Vue CLI local files
+/dist
+/public
+/.cache
+.vscode/
+
+# Log files
+logs
+*.log
+*.log.*
+
+# Python specific ignores
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.ipynb_checkpoints
+venv/
+env/
+ENV/
+.venv/
+.pytest_cache/
+
+# Jupyter Notebook specific ignores
+.ipynb_checkpoints
+output/
+
+# Ignore environment variables
+.env
+
+# Ignore IDE/Editor specific files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore VSCode settings and other editor config files
+.vscode/
+.editorconfig
+
+# Ignore coverage reports
+coverage/
+coverage*.json
+.nyc_output/
+coverage/
