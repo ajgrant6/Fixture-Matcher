@@ -1,61 +1,56 @@
 <template>
   <div>
-    <h1>Fixture Matcher Tool</h1>
-    <div v-if="loading">Loading data...</div>
-    <div v-else-if="error">{{ error }}</div>
-    <div v-else>
-      <!-- Search input field -->
-      <input type="text" v-model="searchQuery" placeholder="Search..." />
+    <h1>Parts Table</h1>
 
-      <!-- Field selection control for searching -->
-      <select v-model="searchField">
-        <option value="Both">Search Both</option>
-        <option value="Part">Search Part Number</option>
-        <option value="Mask">Search Fixturing Plug</option>
-      </select>
+    <!-- Search input field -->
+    <input type="text" v-model="searchQuery" placeholder="Search..." />
 
-      <!-- Sort selection control -->
-      <select v-model="sortField">
-        <option value="Part">Sort by Part Number</option>
-        <option value="Mask">Sort by Fixturing Plug</option>
-      </select>
+    <!-- Field selection control for searching -->
+    <select v-model="searchField">
+      <option value="Both">Search Both</option>
+      <option value="Part">Search Fixture Only</option>
+      <option value="Mask">Search Plug Only</option>
+    </select>
 
-      <!-- Display a message if no matching results -->
-      <div v-if="filteredPartsData.length === 0">
-        No matching results.
-      </div>
+    <!-- Sort selection control -->
+    <select v-model="sortField">
+      <option value="Part">Sort by Fixture</option>
+      <option value="Mask">Sort by Plug</option>
+    </select>
 
-      <!-- Table displaying filtered and sorted data -->
-      <table v-else>
-        <thead>
-          <tr>
-            <th>Part Number</th>
-            <th>Fixturing Plug</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in filteredPartsData" :key="index">
-            <td>{{ item.Part }}</td>
-            <td>{{ item.Mask }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Display a message if no matching results -->
+    <div v-if="filteredPartsData.length === 0">
+      No matching results.
     </div>
+
+    <!-- Table displaying filtered and sorted data -->
+    <table v-else>
+      <thead>
+        <tr>
+          <th>Fixture</th>
+          <th>Plug</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in filteredPartsData" :key="index">
+          <td>{{ item.Part }}</td>
+          <td>{{ item.Mask }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import axios from 'axios'
+import { ref, computed } from 'vue'
+import partsDataJson from '../data/maskmap.json' // Adjust the path as necessary
 
-const partsData = ref([])
-const loading = ref(true)
-const error = ref(null)
-const searchQuery = ref('')      // Reactive variable for the search input
-const searchField = ref('Both')  // Reactive variable for the selected search field
-const sortField = ref('Part')    // Reactive variable for the selected sort field ('Part' or 'Mask')
+const partsData = ref(partsDataJson)
+const searchQuery = ref('')
+const searchField = ref('Both')
+const sortField = ref('Part')
 
-// Computed property to filter and sort partsData based on searchQuery, searchField, and sortField
+// Computed property remains the same
 const filteredPartsData = computed(() => {
   let filteredData = []
 
@@ -69,33 +64,23 @@ const filteredPartsData = computed(() => {
         return item.Mask.toLowerCase().includes(query)
       } else if (searchField.value === 'Part') {
         return item.Part.toLowerCase().includes(query)
-      } else { // Both
-        return item.Mask.toLowerCase().includes(query) ||
-               item.Part.toLowerCase().includes(query)
+      } else {
+        return (
+          item.Mask.toLowerCase().includes(query) ||
+          item.Part.toLowerCase().includes(query)
+        )
       }
     })
   }
 
-  // Sorting the filtered data based on sortField
+  // Sorting logic
   return filteredData.slice().sort((a, b) => {
-    const fieldA = a[sortField.value] ? a[sortField.value].toLowerCase() : ''
-    const fieldB = b[sortField.value] ? b[sortField.value].toLowerCase() : ''
+    const fieldA = a[sortField.value]?.toLowerCase() || ''
+    const fieldB = b[sortField.value]?.toLowerCase() || ''
     if (fieldA < fieldB) return -1
     if (fieldA > fieldB) return 1
     return 0
   })
-})
-
-onMounted(async () => {
-  try {
-    const response = await axios.get('maskmap.json')
-    partsData.value = response.data
-  } catch (err) {
-    error.value = 'Failed to load data.'
-    console.error("There was an error fetching the data:", err)
-  } finally {
-    loading.value = false
-  }
 })
 </script>
 
