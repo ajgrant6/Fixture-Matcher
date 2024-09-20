@@ -1,43 +1,46 @@
 <template>
   <div>
-    <h1>Parts Table</h1>
+    <h1>Fixture Matcher Tool</h1>
+    <div v-if="loading">Loading data...</div>
+    <div v-else-if="error">{{ error }}</div>
+    <div v-else>
+      <!-- Search input field -->
+      <input type="text" v-model="searchQuery" placeholder="Search..." />
 
-    <!-- Search input field -->
-    <input type="text" v-model="searchQuery" placeholder="Search..." />
+      <!-- Field selection control for searching -->
+      <select v-model="searchField">
+        <option value="Both">Search Both</option>
+        <option value="Part">Search Part Number</option>
+        <option value="Mask">Search Fixturing Plug</option>
+      </select>
 
-    <!-- Field selection control for searching -->
-    <select v-model="searchField">
-      <option value="Both">Search Both</option>
-      <option value="Part">Search Fixture Only</option>
-      <option value="Mask">Search Plug Only</option>
-    </select>
+      <!-- Sort selection control -->
+      <select v-model="sortField">
+        <option value="Part">Sort by Part Number</option>
+        <option value="Mask">Sort by Fixturing Plug</option>
+      </select>
 
-    <!-- Sort selection control -->
-    <select v-model="sortField">
-      <option value="Part">Sort by Fixture</option>
-      <option value="Mask">Sort by Plug</option>
-    </select>
+      <!-- Display a message if no matching results -->
+      <div v-if="filteredPartsData.length === 0">
+        No matching results.
+      </div>
 
-    <!-- Display a message if no matching results -->
-    <div v-if="filteredPartsData.length === 0">
-      No matching results.
+      <!-- Table displaying filtered and sorted data -->
+      <table v-else>
+        <thead>
+          <tr>
+            <th>Part Number</th>
+            <th>Fixturing Plug</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in filteredPartsData" :key="index">
+            <td>{{ item.Part }}</td>
+            <td>{{ item.Mask }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-    <!-- Table displaying filtered and sorted data -->
-    <table v-else>
-      <thead>
-        <tr>
-          <th>Fixture</th>
-          <th>Plug</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(item, index) in filteredPartsData" :key="index">
-          <td>{{ item.Part }}</td>
-          <td>{{ item.Mask }}</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </template>
 
